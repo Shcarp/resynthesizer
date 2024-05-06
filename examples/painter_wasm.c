@@ -138,6 +138,7 @@ void looper()
 
 int main(int argc, char **argv)
 {
+    printf("Press [ESC] to quit.\n");
     const char *source_in = argc > 1 ? argv[1] : "assets/source001.ppm";
     struct ppm *source_ppm = ppm_read(source_in);
 
