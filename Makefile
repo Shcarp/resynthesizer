@@ -51,7 +51,7 @@ $(BUILD_DIR)/%.o: %.c
 $(EXAMPLE_DIR)/painter_wasm: $(EXAMPLE_DIR)/painter_wasm.c $(STATIC_LIB)
 	@echo "$(GREEN)Building $@$(RESET)"
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -o $@ -o index.html $< $(INC_FLAGS) $(STATIC_LIB) -s USE_SDL=2 -s USE_SDL=2 -s MODULARIZE=1 -s EXPORT_ES6=1
+	$(CC) $(CFLAGS) -o $@ $< $(INC_FLAGS) $(STATIC_LIB) -s USE_SDL=2 -s USE_SDL=2 -s MODULARIZE=1 -s EXPORT_ES6=1
 
 # Clean-up command
 clean:
