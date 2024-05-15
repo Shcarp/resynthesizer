@@ -15,7 +15,7 @@ RESET = \033[0m
 LIB_DIR := lib
 BUILD_DIR := build
 SRC_DIR := resynthesizer
-EXAMPLE_DIR := examples
+OUTPUT_DIR := output
 
 # File collection
 SRCS := $(shell find $(SRC_DIR) -name '*.c')
@@ -29,11 +29,9 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 # Library output
 STATIC_LIB := $(LIB_DIR)/libresynthesizer.a
 
-# Examples
-EXAMPLES := $(EXAMPLE_DIR)/painter_wasm
 
 # Default target
-all: $(STATIC_LIB) $(EXAMPLES)
+all: $(STATIC_LIB) remove_object
 	@echo "$(GREEN)Done!$(RESET)"
 
 # Static library creation with emar
@@ -48,14 +46,16 @@ $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(INC_FLAGS) -c $< -o $@
 
 # Example build rules with emcc
-$(EXAMPLE_DIR)/painter_wasm: $(EXAMPLE_DIR)/painter_wasm.c $(STATIC_LIB)
+remove_object: ./remove_object.c $(STATIC_LIB)
 	@echo "$(GREEN)Building $@$(RESET)"
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -o $@ $< $(INC_FLAGS) $(STATIC_LIB) -s USE_SDL=2 -s USE_SDL=2 -s MODULARIZE=1 -s EXPORT_ES6=1
+	mkdir -p $(OUTPUT_DIR)
+	mkdir -p $(OUTPUT_DIR)/$@
+	mkdir -p $(OUTPUT_DIR)/$@/lib
+	$(CC) $(CFLAGS) $< $(INC_FLAGS) $(STATIC_LIB) -s INITIAL_MEMORY=128MB -s MAXIMUM_MEMORY=512MB -s ASSERTIONS=1 -s USE_SDL=2 -s USE_SDL=2 -s MODULARIZE=1 -s EXPORT_ES6=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "FS"]' -o $(OUTPUT_DIR)/$@/lib/$@.html
 
 # Clean-up command
 clean:
-	$(RM) -r $(BUILD_DIR) $(LIB_DIR) $(EXAMPLES)
+	$(RM) -r $(BUILD_DIR) $(LIB_DIR) $(OUTPUT_DIR)
 
 # Dependency inclusion
 -include $(DEPS)
