@@ -1,0 +1,43 @@
+<!doctypehtml>
+    <html lang=en-us>
+
+    <head>
+        <meta charset=utf-8>
+        <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+        <title>Emscripten-Generated Code</title>
+    </head>
+
+    <body>
+        <button class="mybutton">
+            CLICK
+        </button>
+        <canvas id="canvas"></canvas>
+        <script type=module>
+            import module, { loadImage } from"./index.js";
+
+            export const WRAP_PATH = `https://download0image0from0openart-fhxaib5tma-uc.a.run.app`;
+            function wrapImageUrl(url) {
+                return `${WRAP_PATH}/?imageUrl=${encodeURIComponent(url)}`;
+            }
+
+            const width = 512
+            const height = 768
+            const origin = wrapImageUrl("https://cdn.openart.ai/uploads/image_EPydDJEl_1715339390268_raw.jpeg")
+            const mask = wrapImageUrl("https://cdn.openart.ai/mask/image_0-aqtbvI_1715588704608_.png")
+
+            document.querySelector('.mybutton').addEventListener('click', async () => {
+                try {
+
+                    const Module = await module
+
+                    const file = await loadImage(Module, origin, '/image.ppm')
+                    Module._stop()
+                    Module._start(file)
+                } catch (error) {
+                    console.log(error)
+                }
+            })
+        </script>
+    </body>
+
+    </html>
